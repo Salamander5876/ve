@@ -148,6 +148,35 @@
             color: #444;
             font-size: 0.9rem;
         }
+        .easter-egg {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.95);
+            border: 2px solid var(--accent);
+            padding: 2rem;
+            z-index: 9999;
+            text-align: center;
+            font-size: 1.3rem;
+            color: var(--accent);
+            box-shadow: 0 0 30px rgba(255, 26, 26, 0.5);
+            animation: easterEggAppear 0.5s ease-out;
+        }
+        .easter-egg.show {
+            display: block;
+        }
+        @keyframes easterEggAppear {
+            from {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0.5);
+            }
+            to {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
+        }
         @media (max-width: 768px) {
             .logo { font-size: 2.5rem; }
             .timer { font-size: 1.5rem; }
@@ -231,6 +260,13 @@
         <footer>
             &copy; 2025 the_world_v | Секретные данные. Доступ запрещён. <span style="color:var(--accent);">ONLINE</span>
         </footer>
+        <footer>
+            нажмите 5 раз на логотип для раскрытия секрета!
+        </footer>
+    </div>
+
+    <div class="easter-egg" id="easterEgg">
+        <p>Сатирикон и Скаушка вам чё делать нехуй?<br>Я вас сам докшу!</p>
     </div>
 
     <script>
@@ -266,6 +302,26 @@
         // Обновление каждую секунду
         setInterval(updateCountdown, 1000);
         updateCountdown(); // Первый запуск
+
+        // Пасхалка: 5 кликов по логотипу
+        let clickCount = 0;
+        const logo = document.querySelector('.logo');
+        const easterEgg = document.getElementById('easterEgg');
+
+        logo.addEventListener('click', function() {
+            clickCount++;
+            if (clickCount === 5) {
+                easterEgg.classList.add('show');
+                setTimeout(() => {
+                    easterEgg.classList.remove('show');
+                    clickCount = 0;
+                }, 4000);
+            }
+            // Сброс счётчика через 2 секунды
+            setTimeout(() => {
+                clickCount = 0;
+            }, 2000);
+        });
     </script>
 </body>
 </html>
