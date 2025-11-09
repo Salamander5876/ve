@@ -10,6 +10,8 @@
             --text: #e0e0e0;
             --accent: #ff1a1a;
             --border: #333;
+            --timer-bg: #1a0000;
+            --timer-text: #ff4d4d;
         }
         * { margin:0; padding:0; box-sizing:border-box; }
         body {
@@ -17,7 +19,7 @@
             color: var(--text);
             font-family: 'Courier New', monospace;
             line-height: 1.7;
-            padding: 2rem;
+            padding: 0;
         }
         .container {
             max-width: 900px;
@@ -26,9 +28,56 @@
             background: rgba(10,10,10,0.95);
             box-shadow: 0 0 20px rgba(255,26,26,0.1);
         }
+        .countdown {
+            background: var(--timer-bg);
+            padding: 1.5rem;
+            text-align: center;
+            border-bottom: 1px solid var(--border);
+            position: relative;
+            overflow: hidden;
+        }
+        .countdown::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,26,26,0.05), transparent);
+            animation: scan 3s linear infinite;
+        }
+        @keyframes scan {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        .countdown-title {
+            font-size: 1.1rem;
+            color: #ff6b6b;
+            margin-bottom: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-weight: bold;
+        }
+        .timer {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--timer-text);
+            letter-spacing: 0.15em;
+            text-shadow: 0 0 10px var(--accent);
+            font-family: 'Orbitron', 'Courier New', monospace;
+        }
+        .timer span {
+            display: inline-block;
+            min-width: 2.5ch;
+            text-align: center;
+        }
+        .timer-labels {
+            font-size: 0.7rem;
+            color: #888;
+            margin-top: 0.3rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+        }
         header {
             text-align: center;
-            padding: 3rem 1rem;
+            padding: 3rem 1rem 2rem;
             border-bottom: 1px solid var(--border);
             position: relative;
         }
@@ -101,12 +150,28 @@
         }
         @media (max-width: 768px) {
             .logo { font-size: 2.5rem; }
-            body { padding: 1rem; }
+            .timer { font-size: 1.5rem; }
+            .countdown-title { font-size: 1rem; }
         }
     </style>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="container">
+        <!-- ОБРАТНЫЙ ОТСЧЁТ -->
+        <div class="countdown">
+            <div class="countdown-title">До раскрытия личности</div>
+            <div class="timer" id="countdown">
+                <span id="days">00</span> : 
+                <span id="hours">00</span> : 
+                <span id="minutes">00</span> : 
+                <span id="seconds">00</span>
+            </div>
+            <div class="timer-labels">
+                <span>ДНЕЙ</span> <span>ЧАСОВ</span> <span>МИНУТ</span> <span>СЕКУНД</span>
+            </div>
+        </div>
+
         <header>
             <div class="horn">📡</div>
             <div class="logo">the_world_v</div>
@@ -164,8 +229,43 @@
         </main>
 
         <footer>
-            &copy; 2025 the_world_v | Секретные данные. Доступ запрещён. <span style="color:var(--accent);">📡 ONLINE</span>
+            &copy; 2025 the_world_v | Секретные данные. Доступ запрещён. <span style="color:var(--accent);">ONLINE</span>
         </footer>
     </div>
+
+    <script>
+        // Целевая дата: 27 ноября 2025, 00:00 по UTC+9 (Япония, Корея)
+        const targetDate = new Date('2025-11-27T00:00:00+09:00').getTime();
+
+        const countdownElement = document.getElementById('countdown');
+        const daysSpan = document.getElementById('days');
+        const hoursSpan = document.getElementById('hours');
+        const minutesSpan = document.getElementById('minutes');
+        const secondsSpan = document.getElementById('seconds');
+
+        function updateCountdown() {
+            const now = new Date().getTime();
+            const distance = targetDate - now;
+
+            if (distance < 0) {
+                countdownElement.innerHTML = '<span style="color:#00ff41;">ИДЕНТИЧНОСТЬ РАСКРЫТА</span>';
+                return;
+            }
+
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            daysSpan.textContent = days.toString().padStart(2, '0');
+            hoursSpan.textContent = hours.toString().padStart(2, '0');
+            minutesSpan.textContent = minutes.toString().padStart(2, '0');
+            secondsSpan.textContent = seconds.toString().padStart(2, '0');
+        }
+
+        // Обновление каждую секунду
+        setInterval(updateCountdown, 1000);
+        updateCountdown(); // Первый запуск
+    </script>
 </body>
 </html>
