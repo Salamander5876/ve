@@ -177,6 +177,53 @@
                 transform: translate(-50%, -50%) scale(1);
             }
         }
+        .game-button-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 10000;
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 1s ease-out;
+        }
+        .game-button-overlay.show {
+            display: flex;
+        }
+        .game-button {
+            background: linear-gradient(135deg, var(--accent), #ff4d4d);
+            color: white;
+            font-size: 3rem;
+            font-weight: bold;
+            padding: 3rem 6rem;
+            border: 3px solid white;
+            border-radius: 20px;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            box-shadow: 0 0 50px rgba(255, 26, 26, 0.8);
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .game-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 80px rgba(255, 26, 26, 1);
+            background: linear-gradient(135deg, #ff4d4d, var(--accent));
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @media (max-width: 768px) {
+            .game-button {
+                font-size: 2rem;
+                padding: 2rem 4rem;
+            }
+        }
         @media (max-width: 768px) {
             .logo { font-size: 2.5rem; }
             .timer { font-size: 1.5rem; }
@@ -269,6 +316,10 @@
         <p>Сатирикон и Скаушка вам чё делать нехуй?<br>Я вас сам докшу!</p>
     </div>
 
+    <div class="game-button-overlay" id="gameButtonOverlay">
+        <a href="http://185.250.181.20:3000" class="game-button">Сыграть в игру?</a>
+    </div>
+
     <script>
         // Целевая дата: 27 ноября 2025, 00:00 по UTC+9 (Япония, Корея)
         const targetDate = new Date('2025-11-27T00:00:00+09:00').getTime();
@@ -285,6 +336,8 @@
 
             if (distance < 0) {
                 countdownElement.innerHTML = '<span style="color:#00ff41;">ИДЕНТИЧНОСТЬ РАСКРЫТА</span>';
+                // Показать кнопку игры
+                document.getElementById('gameButtonOverlay').classList.add('show');
                 return;
             }
 
